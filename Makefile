@@ -1,6 +1,5 @@
 default:
-	swipl -q -g main -o flp21-log -c flp21-log.pl
-	#swipl -q -g main -o flp21-log -c test.pl
+	swipl -q -g main -o flp20-log -c flp20-log.pl
 
 clean:
-	rm -rf flp21-log
+	rm -rf flp20-log

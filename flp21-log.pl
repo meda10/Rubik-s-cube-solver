@@ -1,6 +1,7 @@
 /*
-* Author: Petr Medek (xmedek07)
-* Date: 2.5.2021
+*  Project: FLP - Log - Rubuk's cube
+*  Author: Petr Medek
+*  Year: 2021
 */
 
 %---------------------------------------
@@ -105,7 +106,7 @@ print_rubik_cube([
 %    prolog_search(NewCube,Solved,Path),
 
 % Depth first search
-% https://github.com/christian-vigh/prolog-experiments
+% Source: https://github.com/christian-vigh/prolog-experiments
 depth_first_search(_,[[Solved|Path]|_],Solved,[Solved|Path]).
 depth_first_search(Depth,[Path|Queue],Solved,FinalPath) :-
     extend(Depth,Path,NewPaths),
@@ -117,7 +118,6 @@ extend(Depth,[Node|Path],NewPaths) :-
     Len < Depth - 1, !,
     findall([NewNode,Node|Path], rotate(Node,NewNode),NewPaths).
 extend(_,_,[]).
-
 
 %---------------------------------------
 % CUBE ROTATIONS
