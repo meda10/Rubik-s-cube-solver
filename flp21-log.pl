@@ -369,7 +369,7 @@ main :-
     read_lines(LL),
     split_lines(LL,S),
     load_rubik_cube(S,Cube),
-    depth_first_search(7, [[Cube]],
+    depth_first_search(8, [[Cube]],
         [
             [[E_1, E_1, E_1], [E_1, E_1, E_1], [E_1, E_1, E_1]],
             [[A_1, A_1, A_1], [A_1, A_1, A_1], [A_1, A_1, A_1]],
@@ -377,7 +377,7 @@ main :-
             [[C_1, C_1, C_1], [C_1, C_1, C_1], [C_1, C_1, C_1]],
             [[D_1, D_1, D_1], [D_1, D_1, D_1], [D_1, D_1, D_1]],
             [[F_1, F_1, F_1], [F_1, F_1, F_1], [F_1, F_1, F_1]]
-        ], Path), % Maximum depth 7
+        ], Path), % Maximum depth 8
     reverse_list(Path, Reversed),
     print_path(Reversed),
     halt.
