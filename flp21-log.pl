@@ -3,8 +3,11 @@
 * Date: 2.5.2021
 */
 
-/** Source: input2.pl */
-/** Autor: Martin Hyrs, ihyrs@fit.vutbr.cz */
+%---------------------------------------
+% INPUT
+% Source: input2.pl
+% Autor: Martin Hyrs, ihyrs@fit.vutbr.cz
+%---------------------------------------
 /** cte radky ze standardniho vstupu, konci na LF nebo EOF */
 read_line(L,C) :-
 	get_char(C),
@@ -37,8 +40,7 @@ split_line([H|T], [[H|G]|S1]) :- split_line(T,[G|S1]). % G je prvni seznam ze se
 split_lines([],[]).
 split_lines([L|Ls],[H|T]) :- split_lines(Ls,T), split_line(L,H).
 
-%---------------------------------------
-
+/** Loads rubik's cube to internal representation */
 load_rubik_cube([
 	[E3],
 	[E2],
@@ -59,45 +61,66 @@ load_rubik_cube([
 ]
 ).
 
+%---------------------------------------
+% OUTPUT
+%---------------------------------------
+
+/** Reverses list */
+reverse_list([],[]).
+reverse_list([H|T],R) :- reverse_list(T,Rev_T), append(Rev_T,[H],R).
+
+/** Prints new line between cubes */
+print_new_line([]).
+print_new_line(_) :- writeln("").
+
+/** Prnts rubik's cubes steps to solved cube*/
+print_path([]).
+print_path([Cube|Path]) :-
+    print_rubik_cube(Cube),
+    print_new_line(Path),
+    print_path(Path).
+
+/** Prints one rubik's cube*/
 print_rubik_cube([
-    [E1,E2,E3],
-    [A1,A2,A3],
-    [B1,B2,B3],
-    [C1,C2,C3],
-    [D1,D2,D3],
-    [F1,F2,F3]
+        [[E_11, E_12, E_13], [E_21, E_22, E_23], [E_31, E_32, E_33]],
+        [[A_11, A_12, A_13], [A_21, A_22, A_23], [A_31, A_32, A_33]],
+        [[B_11, B_12, B_13], [B_21, B_22, B_23], [B_31, B_32, B_33]],
+        [[C_11, C_12, C_13], [C_21, C_22, C_23], [C_31, C_32, C_33]],
+        [[D_11, D_12, D_13], [D_21, D_22, D_23], [D_31, D_32, D_33]],
+        [[F_11, F_12, F_13], [F_21, F_22, F_23], [F_31, F_32, F_33]]
 ]) :-
-    write(E1), write('\n'), write(E2), write('\n'), write(E3), write('\n'),
-    write(A1), write(B1), write(C1), write(D1), write('\n'),
-    write(A3), write(B2), write(C2), write(D2), write('\n'),
-    write(A2), write(B3), write(C3), write(D3), write('\n'),
-    write(F1), write('\n'), write(F2), write('\n'), write(F3), write('\n').
+    writef("%w%w%w\n%w%w%w\n%w%w%w\n", [E_31, E_32, E_33, E_21, E_22, E_23, E_11, E_12, E_13]),
+    writef("%w%w%w %w%w%w %w%w%w %w%w%w\n", [A_11, A_12, A_13, B_11, B_12, B_13, C_11, C_12, C_13, D_11, D_12, D_13]),
+    writef("%w%w%w %w%w%w %w%w%w %w%w%w\n", [A_21, A_22, A_23, B_21, B_22, B_23, C_21, C_22, C_23, D_21, D_22, D_23]),
+    writef("%w%w%w %w%w%w %w%w%w %w%w%w\n", [A_31, A_32, A_33, B_31, B_32, B_33, C_31, C_32, C_33, D_31, D_32, D_33]),
+    writef("%w%w%w\n%w%w%w\n%w%w%w\n", [F_11, F_12, F_13, F_21, F_22, F_23, F_31, F_32, F_33]).
 
 %---------------------------------------
 % SEARCH
 %---------------------------------------
 
-prolog_search(Goal,Goal,[Goal]):-
-    writeln("here").
-prolog_search(Cube,Goal,[Cube|Path]) :-
-%    write("New cube: "), writeln(NewCube),
-    prolog_search(NewCube,Goal,Path),
-%    write("New cube: "), writeln(NewCube),
-    rotate(Cube, NewCube).
+%search(Solved,Solved,[Solved]).
+%search(Cube,Solved,[Cube|Path]) :-
+%    rotate(Cube, NewCube).
+%    prolog_search(NewCube,Solved,Path),
+
+% Depth first search
+% https://github.com/christian-vigh/prolog-experiments
+depth_first_search(_,[[Solved|Path]|_],Solved,[Solved|Path]).
+depth_first_search(Depth,[Path|Queue],Solved,FinalPath) :-
+    extend(Depth,Path,NewPaths),
+    append(NewPaths,Queue,NewQueue),
+    depth_first_search(Depth,NewQueue,Solved,FinalPath).
+
+extend(Depth,[Node|Path],NewPaths) :-
+    length(Path,Len),
+    Len < Depth - 1, !,
+    findall([NewNode,Node|Path], rotate(Node,NewNode),NewPaths).
+extend(_,_,[]).
+
 
 %---------------------------------------
-depth_bound(_,[[Goal|Path]|_],Goal,[Goal|Path]).
-depth_bound(Depth,[Path|Queue],Goal,FinalPath) :-
-    extend1(Depth,Path,NewPaths),
-%    write("Path: "), writeln(Path),
-    append(NewPaths,Queue,NewQueue),
-    depth_bound(Depth,NewQueue,Goal,FinalPath).
-
-extend1(Depth,[Node|Path],NewPaths) :-
-    length(Path,Len),
-    Len < Depth-1, !,
-    findall([NewNode,Node|Path],rotate(Node,NewNode),NewPaths).
-extend1(_,_,[]).
+% CUBE ROTATIONS
 %---------------------------------------
 
 %Rotate Top clock wise
@@ -340,13 +363,13 @@ rotate(
     ]
 ).
 
+% Main -> read input -> load cube -> DFS -> print output
 main :-
     prompt(_, ''),
     read_lines(LL),
     split_lines(LL,S),
     load_rubik_cube(S,Cube),
-%    print_rubik_cube(Cube),
-    depth_bound(7, [[Cube]],
+    depth_first_search(7, [[Cube]],
         [
             [[E_1, E_1, E_1], [E_1, E_1, E_1], [E_1, E_1, E_1]],
             [[A_1, A_1, A_1], [A_1, A_1, A_1], [A_1, A_1, A_1]],
@@ -354,15 +377,7 @@ main :-
             [[C_1, C_1, C_1], [C_1, C_1, C_1], [C_1, C_1, C_1]],
             [[D_1, D_1, D_1], [D_1, D_1, D_1], [D_1, D_1, D_1]],
             [[F_1, F_1, F_1], [F_1, F_1, F_1], [F_1, F_1, F_1]]
-        ], Path),
-%    prolog_search(Cube,
-%        [
-%            [[E_1, E_1, E_1],[E_1, E_1, E_1], [E_1, E_1, E_1]],
-%            [[A_1, A_1, A_1],[A_1, A_1, A_1], [A_1, A_1, A_1]],
-%            [[B_1, B_1, B_1],[B_1, B_1, B_1], [B_1, B_1, B_1]],
-%            [[C_1, C_1, C_1],[C_1, C_1, C_1], [C_1, C_1, C_1]],
-%            [[D_1, D_1, D_1],[D_1, D_1, D_1], [D_1, D_1, D_1]],
-%            [[F_1, F_1, F_1],[F_1, F_1, F_1], [F_1, F_1, F_1]]
-%        ], Path),
-    writeln(Path),
+        ], Path), % Maximum depth 7
+    reverse_list(Path, Reversed),
+    print_path(Reversed),
     halt.
