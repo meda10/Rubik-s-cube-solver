@@ -20,3 +20,13 @@ Program can take more time to find solution for difficult configurations.
 
 ## Tests
 Directory `test` contains test files for `flp20-log`
+
+| Test  | Time |
+| ------------- | ------------- |
+| 0.in  | 1s  |
+| 1.in  | 1s  |
+| 2.in  | 1s  |
+| 3.in  | 1s  |
+| 4.in  | 8s  |
+| 5.in  | ∞ |
+| 6.in  | ∞ |
