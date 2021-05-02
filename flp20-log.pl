@@ -72,7 +72,7 @@ reverse_list([H|T],R) :- reverse_list(T,Rev_T), append(Rev_T,[H],R).
 
 /** Prints new line between cubes */
 print_new_line([]).
-print_new_line(_) :- writeln("").
+print_new_line(_) :- writef("\n").
 
 /** Prnts rubik's cubes steps to solved cube*/
 print_path([]).
@@ -369,7 +369,7 @@ main :-
     read_lines(LL),
     split_lines(LL,S),
     load_rubik_cube(S,Cube),
-    depth_first_search(8, [[Cube]],
+    depth_first_search(26, [[Cube]],
         [
             [[E_1, E_1, E_1], [E_1, E_1, E_1], [E_1, E_1, E_1]],
             [[A_1, A_1, A_1], [A_1, A_1, A_1], [A_1, A_1, A_1]],
@@ -377,7 +377,7 @@ main :-
             [[C_1, C_1, C_1], [C_1, C_1, C_1], [C_1, C_1, C_1]],
             [[D_1, D_1, D_1], [D_1, D_1, D_1], [D_1, D_1, D_1]],
             [[F_1, F_1, F_1], [F_1, F_1, F_1], [F_1, F_1, F_1]]
-        ], Path), % Maximum depth 8
+        ], Path), % Maximum depth 26
     reverse_list(Path, Reversed),
     print_path(Reversed),
     halt.
