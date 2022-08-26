@@ -1,5 +1,4 @@
-# FLP - Rubik's cube
-##### Author: Petr Medek (xmedek07)
+# Rubik's cube solver
 
 ## Build and Run
 Program is build using command `make`. The project is compiled using the `swipl` compiler.
